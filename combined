@@ -1,0 +1,488 @@
+//랜든
+
+import { firestore } from "./firebase";
+
+const firebaseConfig = {
+
+  };
+
+firebase.initialiseAPP(firebaseConfig);
+
+const db = firebase.firestore();
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+
+
+//1번 냉장고 재료 가져오기 (컬렉션에서 데이터를 조회하고 array로 반환)
+const ingredient_array = await collection('ingredients').get();
+const ingredient_map = ingredient_array.docs.map(doc => doc.data());
+
+//유저가 냉장고에 뭐가있는지 받아오는 함수가 없음
+const users_refrigerator = await collection('users').doc(user_id).get();
+const users_refrigerator_map = users_refrigerator.docs.map(doc => doc.data());
+
+//냉장고랑 유저 냉장고 매치 --> 프론트
+for (
+
+// 2번 선택한 재료를 저장하거나 업데이트 
+// -->일단은 재료 각각의 id를 부여하고 그 id가 이미 존재할 경우에는 기존 재료 업데이트하는 식으로 그렇지 않으면 새로운 재료 추가 
+function add_to_users_refrigerator() { //냉장고
+    const input_name = document.getElementsById("search-select").value;//input 받고  //이거 만들어놨었는데 생각해보니깐 function에 그냥 넣으면 될것같아서
+    const input_gram = document.getElementsById("search-select").value;
+    if (input_name.value != ingredient_map){ //확인
+        const new_ingredient = {
+            ingredient_id,
+            ingredient_name: input_name,
+            ingredient_gram: input_gram,
+        }
+        else {
+        유저냉장고에 갯수 업뎃
+    }
+        /*return{
+            ingredient_id,
+            ingredient_name,
+            ingredient_gram,
+            ingredient_image,
+            ingredient_categori
+        } //값 리턴 */
+    }
+}//근데 이거 냉장고 const도 필요한가?
+//내가 이거 구상을 잘못했나? 뭔가 찜찜
+
+
+// 3번 검색 시 비슷한 재료 카테고리 나오게하는 [이부분 같은 경우는 함수로 구성을 해도 되지만 함수 말고 그냥 array에다가 filter해서 넣는 식으로 구성해도 될듯]
+//--> 각각 재료의 이름들은 기반으로 해서 .filter((ingredient) => 블라블라)하는 식으로 구성 
+function  ingredient_search_filter(search_input) {
+    input = ingredient_map;
+    return input.filter(ingredient => ingredient.ingredient_name.includes(search_input));
+}//맞는지 모르겠네...;;
+
+
+//unit변환 하고 그람으로 줄이는게 맞을것같아서 순서 바꿨으
+
+
+//5.	다른 unit으로 변환하기
+//--> 이부분은 switch / case 구문 쓰면 될듯
+async function switch_unit_conversion (w, ingredient, conversion_type) {
+    const changerate = await collection('unit_ratio').doc(ingredient).get();
+    switch(conversion_type) {
+        case "unit_to_gram":
+            return w * changerate;
+        case "gram_to_unit":
+            return w / changerate;
+            
+        default:
+            return w;
+    }
+    
+    changerate = changerate.data().unit_to_gram;
+    w = w * changerate;
+    return w;
+}
+/*
+async function switch_gram_to_unit (w,ingredient) {
+    let changerate = await collection('unit_ratio').doc(ingredient).get();
+    changerate = changerate.data().unit_to_gram;
+    w = (w / changerate).toFixed(2);
+    return w;
+}
+//Gram to Bigspoon n Bigspoon to gram
+async function switch_gram_to_bigspoon (w,ingredient) {
+    let changerate = await collection('unit_ratio').doc(ingredient).get();
+    changerate = changerate.data().unit_to_gram;
+    w = (w * changerate).toFixed(2);
+    return w;
+}
+
+async function switch_bigspoon_to_gram (w,ingredient) {
+    let changerate = await collection('unit_ratio').doc(ingredient).get();
+    changerate = changerate.data().unit_to_gram;
+    w = (w / changerate).toFixed(2);
+    return w;
+}
+
+//Gram to Smallspoon n Smallspoon to gram
+async function switch_gram_to_smallspoon (w,ingredient) {
+    let changerate = await collection('unit_ratio').doc(ingredient).get();
+    changerate = changerate.data().unit_to_gram;
+    w = (w * changerate).toFixed(2);
+    return w;
+}
+
+async function switch_smallspoon_to_gram (w,ingredient) {
+    let changerate = await collection('unit_ratio').doc(ingredient).get();
+    changerate = changerate.data().unit_to_gram;
+    w = (w / changerate).toFixed(2);
+    return w;
+}
+
+*/
+// 4번 레시피에서 조리 완료시 냉장고의 재료가 줄어들도록하는 함수
+//--> 레시피의 재료들 부분 db에서 받아서 넣고 사용한 부분 감하는 식으로 
+async function subtract_ingredient (w,kind,name) {
+    const OG_gram = await collection('ingredents').doc(kind).get(name).ingredient_gram;
+    const update_value = OG_gram - w;
+    if (update_value < 0){
+        collection('users').doc(kind).update(name).ingredient_gram = 0;
+        else{
+        collection('users').doc(kind).update(name).ingredient_gram = update_value;
+        update_value.update({ingredient_gram})
+    }
+    //Math.max(0,update_gram)
+}
+//에러 뜨면 .data 써야됨
+
+
+
+//홍구
+
+import { firestore } from "./firebase";
+import { getAnalytics } from "firebase/analytics";
+import { getFirestore } from "firebase/firestore";
+
+const firebaseConfig = {
+
+  };
+
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+const db = getFirestore(app);
+
+//이런 방식으로 레시피 컬랙션 추가 가능.
+collection('recipe').doc(recipeId).set({
+  recipeCom:'',
+  recipeDiff:'1',
+  recipeId:'1',
+  recipeName:'닭볶음탕',
+  recipeProd:['파와 청양고추는 어슷 썰고...','양파는 반을 자른후...'],
+  recipeTime:[0,30]
+});
+
+//레시피 북마크 컬렉션.
+collection('bookmark').doc(userId).set({
+  [recipeId]:true//북마크 했는지 여부(true = 북마크 추가된것)
+});
+  
+
+//레시피 부족한 재료 컬렉션.
+collection('recipeLack').doc(lack1).set({
+  lackComp:['양파','파'],
+  lakcNum:'2',
+  recipeId:'1'
+});
+
+
+//DB에서 이름 파트에서 가나다 순 정렬하는 함수, 순서대로 정렬된게 koreanOrder에 저장됨.
+async function reforderBykorean(){
+  const koreanOrder = await db.collection('recipe').orderBy('recipeName').get();
+  return koreanOrder.docs.map(doc => doc.data());
+}
+
+
+//DB이용해서 부족한 재료 갯수가 적은순으로 정렬하는 함수  ---> 솔직히 이거는 될지안될지도 몰라요, 코드 이해도 잘 못했어요;;
+async function refrigerator_order_by_lack(refrigerator_ingredients){
+  const lackOrder = await db.collection('recipe').get();
+
+  const sortedrecipe = lackOrder.docs.map(function (recipeDoc) {
+    const recipeDocdata = recipeDoc.data();
+    const lack = comparelngredients(refrigerator_ingredients,recipeDocdata.recipe_ingredients);
+
+    return {
+      recipeId: recipeDoc.recipeId,
+      lackCount: lack.length,
+    };
+  }).sort(function (a,b){
+    return a.lackCount - b.lackCount;
+  });
+  return sortedrecipe.map(function (recipeDocdata){
+    return {
+      recipeId: recipeDocdata.recipeId,
+      lackCount: recipeDocdata.lackCount
+    };
+  });
+
+}
+
+
+//레시피 북마크 여부 토글
+async function toggleBm(userId,recipeId){
+  const bookmark = db.collection('bookmark').doc(userId);
+  const bookmarkData = await bookmark.get();
+  
+  if (bookmarkData.exists){
+    const isBookmarked = bookmarkData.data()[recipeId];
+    await bookmark.update({
+      [recipeId]:!isBookmarked,
+    });
+  }
+  else{
+    await bookmark.set({
+      [recipeId]:false,
+    });
+  }
+}
+
+
+//북마크된 레시피의 아이디 가져오는 함수
+async function getBm(userId){
+  const bookmarkData = await db.collection('bookmark').doc(userId).get();
+  const bookmarkBmid = [];
+
+  for (const id in bookmarkData.data() || {}){
+    if (bookmarkData.data()[id] === true){
+        bookmarkBmid.push(id);
+    }
+  }
+  return bookmarkBmid;
+}
+
+//레시피 추가한거 저장하는 버튼 누르면서 이 함수가 실행됨으로써 recipeCounter value가+1되서 레시피 아이디 생성하는 함수 
+let recipeCounter = 0;
+function recipeIdGenerator(){
+  recipeCounter +=1;
+  return 'recipe'+recipeCounter;
+}
+
+
+//레시피와 냉장고에있는 재료 비교하는 함수. refrigerator_ingredients 냉장고에있는 재료 array. recipe_ingredients = 레시피에 필요한 재료 array.
+function compareComp(refrigerator_ingredients,recipe_ingredients){
+  const notInref = [];
+  for (let i=0; i<recipe_ingredients.length; i++)
+  {
+    const component = recipe_ingredients[i];
+
+    if (!refrigerator_ingredients.includes(component)){
+      notInref.push(component);
+    }
+  }
+  return notInref;
+}
+
+
+
+import { authService } from "fbase";
+import React, { useState } from "react";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} 
+from "firebase/auth";
+
+
+//사용자 로그인 함수.
+const Auth = ({}) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [newAccount, setNewAccount] = useState(false);
+
+  const onChange = (event) => {
+    const {
+      target: { name, value },
+    } = event;
+    if (name === "email") {
+      setEmail(value);
+    } else if (name === "password") {
+      setPassword(value);
+    }
+  };
+  
+  
+  //사용자 생성 함수.
+  const onSubmit = async (event) => {
+    event.preventDefault();
+    let data;
+    if (newAccount) {
+      createUserWithEmailAndPassword(authService, email, password)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          console.log(user);
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+        });
+    } else {
+      signInWithEmailAndPassword(authService, email, password)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          console.log(user);
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+        });
+    }
+  };
+  
+  
+//사용자 로그인 상태확인 함수
+const [isLoggedIn,setIsLoggedIn] = useState(false);
+ useEffect(() => {
+    authService.onAuthStateChanged((user) => {
+      if (user) {
+        setIsloggedIn(true);
+      } else {
+        setIsloggedIn(false);
+      }
+    });
+  }, []);
+
+
+
+//하영
+
+const admin = require('firebase-admin');
+const serviceAccount = require('serviceAccountKey경로 추가.json');
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: '진짜 db URL',
+});
+
+const db = admin.firestore();
+
+//getWeeklyCalendar
+const getWeeklyCalendar = async (startDate, endDate) => {
+  try {
+    const calendarSnapshot = await db.collection('weeklyCalendars').doc(startDate + '_' + endDate).get();
+    const calendarData = calendarSnapshot.data();
+    console.log('Weekly calendar retrieved successfully');
+    return calendarData;
+  } catch (error) {
+    console.error('Error getting weekly calendar:', error);
+    return null;
+  }
+};
+
+//setGraphData
+const setGraphData = async (selectedPeriod, graphData) => {
+  try {
+    const graphDataRef = db.collection('graphData');
+
+    if (selectedPeriod === 'monthly6Months') {
+      // 도넛 그래프 데이터 설정 (1개월 단위)
+      await graphDataRef.doc('monthly6MonthsDonutGraph').set(graphData.donutGraphData);
+      // 꺾은선 그래프 데이터 설정
+      await graphDataRef.doc('monthly6MonthsLineGraph').set(graphData.lineGraphData);
+    } else if (selectedPeriod === 'monthly1Year') {
+      // 도넛 그래프 데이터 설정 (1개월 단위)
+      await graphDataRef.doc('monthly1YearDonutGraph').set(graphData.donutGraphData);
+      // 꺾은선 그래프 데이터 설정
+      await graphDataRef.doc('monthly1YearLineGraph').set(graphData.lineGraphData);
+    } else {
+      console.error('Invalid selectedPeriod:', selectedPeriod);
+      return false;
+    }
+
+    console.log('Graph data set successfully');
+    return true;
+  } catch (error) {
+    console.error('Error setting graph data:', error);
+    return false;
+  }
+};
+
+
+// addDailyExpense
+const addDailyExpense = async (date, expenseData) => {
+  try {
+    const dailyExpenseRef = db.collection('dailyExpenses').doc(date);
+    await dailyExpenseRef.set(expenseData);
+    console.log('Daily expense added successfully');
+    return true;
+  } catch (error) {
+    console.error('Error adding daily expense:', error);
+    return false;
+  }
+};
+
+//getDailyExpense
+const getDailyExpense = async (date) => {
+  try {
+    const expenseSnapshot = await db.collection('dailyExpenses').doc(date).get();
+    const expenseData = expenseSnapshot.data();
+    console.log('Daily expense retrieved successfully');
+    return expenseData;
+  } catch (error) {
+    console.error('Error getting daily expense:', error);
+    return null;
+  }
+};
+
+// getGraphData
+const getGraphData = async (selectedPeriod) => {
+  try {
+    const graphDataRef = db.collection('graphData');
+
+    if (selectedPeriod === 'monthly6Months') {
+      // 도넛 그래프 데이터 가져오기
+      const donutGraphSnapshot = await graphDataRef.doc('monthly6MonthsDonutGraph').get();
+      const donutGraphData = donutGraphSnapshot.data();
+
+      // 꺾은선 그래프 데이터 가져오기
+      const lineGraphSnapshot = await graphDataRef.doc('monthly6MonthsLineGraph').get();
+      const lineGraphData = lineGraphSnapshot.data();
+
+      return { donutGraphData, lineGraphData };
+    } else if (selectedPeriod === 'monthly1Year') {
+      // 도넛 그래프 데이터 가져오기
+      const donutGraphSnapshot = await graphDataRef.doc('monthly1YearDonutGraph').get();
+      const donutGraphData = donutGraphSnapshot.data();
+
+      // 꺾은선 그래프 데이터 가져오기
+      const lineGraphSnapshot = await graphDataRef.doc('monthly1YearLineGraph').get();
+      const lineGraphData = lineGraphSnapshot.data();
+
+      return { donutGraphData, lineGraphData };
+    } else {
+      console.error('Invalid selectedPeriod:', selectedPeriod);
+      return null;
+    }
+  } catch (error) {
+    console.error('Error getting graph data:', error);
+    return null;
+  }
+};
+
+
+// 예시
+const exampleDailyExpenseData = {
+  amount: 3,
+  item: ['감자', '오이', '포도'],
+  cost: '10000',
+  pay: 'Card',
+  shop: '롯데마트',
+  tag: '장보기',
+  memo: '일주일 장보기',
+};
+
+// 예시 날짜
+const exampleDate = '2024-01-25'; 
+
+// 일일 지출 추가
+const isExpenseAdded = await addDailyExpense(exampleDate, exampleDailyExpenseData);
+console.log('Is Expense Added:', isExpenseAdded);
+
+
+// 일일 지출 가져오기
+const retrievedExpense = await getDailyExpense(exampleDate);
+console.log('Retrieved Daily Expense:', retrievedExpense);
+
+
+// 예시 주 (시작 날짜 - 끝 날짜(시작 날짜 + 6))
+const exampleCalendarStartDate = '2024-01-21'; // 시작 날짜
+const exampleCalendarEndDate = '2024-01-27'; // 끝 날짜
+
+// 주간 달력 가져오기
+const retrievedWeeklyCalendar = await getWeeklyCalendar(exampleCalendarStartDate, exampleCalendarEndDate);
+console.log('Retrieved Weekly Calendar:', retrievedWeeklyCalendar);
+
+
+// 예시 데이터
+const exampleDonutGraphData = { gray: 50, tag1Color: 'orange', tag2Color: 'red', tag3Color: 'brown' }; // 도넛 그래프 데이터 (색상 변경 필요)
+const exampleLineGraphData = { '2022-03': 120, '2022-04': 150, '2022-05': 180, '2022-06': 200, '2022-07': 150, '2022-08': 210, '2022-09': 90, '2022-10': 120, '2023-11': 130, '2023-`12': 210, '2024-01': 150, '2024-02': 100 }; // 꺾은선 그래프 데이터
+
+// 그래프 데이터 설정
+const isGraphDataSet = await setGraphData('monthly6Months', exampleDonutGraphData, exampleLineGraphData);
+console.log('Is Graph Data Set:', isGraphDataSet);
