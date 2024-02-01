@@ -1,8 +1,4 @@
-//랜든
-
 import { firestore } from "./firebase";
-import { firestore } from "./firebase";
-import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore";
 import { authService } from "fbase";
 import React, { useState } from "react";
@@ -11,18 +7,18 @@ import {
   signInWithEmailAndPassword,
 } 
 from "firebase/auth";
-
-const firebaseConfig = {
-
-  };
-
-firebase.initialiseAPP(firebaseConfig);
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: '진짜 db URL',
+});
 
 const db = firebase.firestore();
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+const admin = require('firebase-admin');
+const serviceAccount = require('serviceAccountKey경로 추가.json');
 
+//const db = admin.firestore();
+
+//랜든
 
 //1번 냉장고 재료 가져오기 (컬렉션에서 데이터를 조회하고 array로 반환)
 const ingredient_array = await collection('ingredients').get();
@@ -147,15 +143,6 @@ async function subtract_ingredient (w,kind,name) {
 
 //홍구
 
-
-
-const firebaseConfig = {
-
-  };
-
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-const db = getFirestore(app);
 
 //이런 방식으로 레시피 컬랙션 추가 가능.
 collection('recipe').doc(recipeId).set({
@@ -334,16 +321,6 @@ const [isLoggedIn,setIsLoggedIn] = useState(false);
 
 
 //하영
-
-const admin = require('firebase-admin');
-const serviceAccount = require('serviceAccountKey경로 추가.json');
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: '진짜 db URL',
-});
-
-const db = admin.firestore();
 
 //getWeeklyCalendar
 const getWeeklyCalendar = async (startDate, endDate) => {
