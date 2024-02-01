@@ -21,123 +21,84 @@ const serviceAccount = require('serviceAccountKey경로 추가.json');
 //랜든
 
 //1번 냉장고 재료 가져오기 (컬렉션에서 데이터를 조회하고 array로 반환)
-const ingredient_array = await collection('ingredients').get();
-const ingredient_map = ingredient_array.docs.map(doc => doc.data());
+//재료 데이터 가져오기
+const ingredient_array = await getDocs(collection(db,'ingredients')); // 수정함
+const ingredient_map = ingredient_array.docs.map(doc => doc.data()); //이친구가 쓰임
 
-//유저가 냉장고에 뭐가있는지 받아오는 함수가 없음
-const users_refrigerator = await collection('users').doc(user_id).get();
-const users_refrigerator_map = users_refrigerator.docs.map(doc => doc.data());
+//유저가 냉장고에 받아오기
+const users_refrigerator = await collection(db,'users').doc(user_id).get();
+const users_refrigerator_map = [users_refrigerator.data()]; //이친구가 쓰임
 
 //냉장고랑 유저 냉장고 매치 --> 프론트
-for (
+for (let i=0; i < ingredient_maps.length; i++){
+  if (ingredient_map[i] = users_refrigerator_map[0]){ // 수정함[i]추가
+    return users_refrigerator_map;
+    break;
+  }
+}
 
 // 2번 선택한 재료를 저장하거나 업데이트 
-// -->일단은 재료 각각의 id를 부여하고 그 id가 이미 존재할 경우에는 기존 재료 업데이트하는 식으로 그렇지 않으면 새로운 재료 추가 
 function add_to_users_refrigerator() { //냉장고
-    const input_name = document.getElementsById("search-select").value;//input 받고  //이거 만들어놨었는데 생각해보니깐 function에 그냥 넣으면 될것같아서
-    const input_gram = document.getElementsById("search-select").value;
-    if (input_name.value != ingredient_map){ //확인
-        const new_ingredient = {
-            ingredient_id,
+    const input_name = document.getElementsById("input-name").value;//input 받고
+    const input_gram = document.getElementsById("input-gram").value;//input gram 받고
+
+  const existing_ingredient_index = users_refrigerator_map.findIndex(ingredient => ingredient.ingredient_name === input_name);
+  if ( existing_ingredient_index !== -1) {
+    users_refrigerator_map[existing_ingredient_index].ingredient_gram += parseFloat(input_gram);
+  }
+  else {
+    const new_ingredient = {
+            ingredient_id: "여기 db꺼 가져오기",
             ingredient_name: input_name,
-            ingredient_gram: input_gram,
-        }
-        else {
-        유저냉장고에 갯수 업뎃
+            ingredient_gram: parseFloat(input_gram),
+            ingredient_image: "",
+            ingredient_category: ""
+        };
+      users_refrigerator_map.push(new_ingredient);
+       }
     }
-        /*return{
-            ingredient_id,
-            ingredient_name,
-            ingredient_gram,
-            ingredient_image,
-            ingredient_categori
-        } //값 리턴 */
-    }
-}//근데 이거 냉장고 const도 필요한가?
-//내가 이거 구상을 잘못했나? 뭔가 찜찜
 
 
 // 3번 검색 시 비슷한 재료 카테고리 나오게하는 [이부분 같은 경우는 함수로 구성을 해도 되지만 함수 말고 그냥 array에다가 filter해서 넣는 식으로 구성해도 될듯]
-//--> 각각 재료의 이름들은 기반으로 해서 .filter((ingredient) => 블라블라)하는 식으로 구성 
 function  ingredient_search_filter(search_input) {
-    input = ingredient_map;
-    return input.filter(ingredient => ingredient.ingredient_name.includes(search_input));
-}//맞는지 모르겠네...;;
+    return ingredient_map.filter(ingredient => ingredient.ingredient_name.includes(search_input));
+}
 
 
-//unit변환 하고 그람으로 줄이는게 맞을것같아서 순서 바꿨으
 
+//	4번다른 unit으로 변환하기
 
-//5.	다른 unit으로 변환하기
+//change ratio 불러오는 값
+  const ratio_array = await getDocs(collection(db, 'unit_ratio'));
+  const ratio_array1 = ratio_array.docs.map(doc => doc.data()); // ratio array로 수정
+  const conversion_type2 = ratio_array1.docs.map(doc => doc.data());
+
 //--> 이부분은 switch / case 구문 쓰면 될듯
 async function switch_unit_conversion (w, ingredient, conversion_type) {
-    const changerate = await collection('unit_ratio').doc(ingredient).get();
+    const changerate = conversion_type2[conversion_type];
     switch(conversion_type) {
+      //gram to unit  
+      case "gram_to_unit":
+            return (w * changerate).toFixed(0);
         case "unit_to_gram":
-            return w * changerate;
-        case "gram_to_unit":
-            return w / changerate;
-            
+            return (w / changerate).toFixed(2);
+      //gram to bigspoon
+        case "gram_to_bigspoon";
+            return (w * changerate).toFixed(2);
+      case "bigspoon_to_gram";
+            return (w / changerate).toFixed(2);
         default:
             return w;
     }
-    
-    changerate = changerate.data().unit_to_gram;
-    w = w * changerate;
-    return w;
-}
-/*
-async function switch_gram_to_unit (w,ingredient) {
-    let changerate = await collection('unit_ratio').doc(ingredient).get();
-    changerate = changerate.data().unit_to_gram;
-    w = (w / changerate).toFixed(2);
-    return w;
-}
-//Gram to Bigspoon n Bigspoon to gram
-async function switch_gram_to_bigspoon (w,ingredient) {
-    let changerate = await collection('unit_ratio').doc(ingredient).get();
-    changerate = changerate.data().unit_to_gram;
-    w = (w * changerate).toFixed(2);
-    return w;
 }
 
-async function switch_bigspoon_to_gram (w,ingredient) {
-    let changerate = await collection('unit_ratio').doc(ingredient).get();
-    changerate = changerate.data().unit_to_gram;
-    w = (w / changerate).toFixed(2);
-    return w;
-}
-
-//Gram to Smallspoon n Smallspoon to gram
-async function switch_gram_to_smallspoon (w,ingredient) {
-    let changerate = await collection('unit_ratio').doc(ingredient).get();
-    changerate = changerate.data().unit_to_gram;
-    w = (w * changerate).toFixed(2);
-    return w;
-}
-
-async function switch_smallspoon_to_gram (w,ingredient) {
-    let changerate = await collection('unit_ratio').doc(ingredient).get();
-    changerate = changerate.data().unit_to_gram;
-    w = (w / changerate).toFixed(2);
-    return w;
-}
-
-*/
-// 4번 레시피에서 조리 완료시 냉장고의 재료가 줄어들도록하는 함수
+// 5번 레시피에서 조리 완료시 냉장고의 재료가 줄어들도록하는 함수
 //--> 레시피의 재료들 부분 db에서 받아서 넣고 사용한 부분 감하는 식으로 
 async function subtract_ingredient (w,kind,name) {
-    const OG_gram = await collection('ingredents').doc(kind).get(name).ingredient_gram;
-    const update_value = OG_gram - w;
-    if (update_value < 0){
-        collection('users').doc(kind).update(name).ingredient_gram = 0;
-        else{
-        collection('users').doc(kind).update(name).ingredient_gram = update_value;
-        update_value.update({ingredient_gram})
-    }
-    //Math.max(0,update_gram)
-}
-//에러 뜨면 .data 써야됨
+  const OG_gram = (await collection(db,'ingredents').doc(kind).get()).data().ingredient_gram;
+  const update_value = OG_gram - w;
+
+  await collection(db, 'users').doc(kind).update({ [name]: {ingredient_gram: Math.max(0, update_value)} });
 
 
 
