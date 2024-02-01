@@ -69,9 +69,10 @@ function  ingredient_search_filter(search_input) {
 //	4번다른 unit으로 변환하기
 
 //change ratio 불러오는 값
-  const ratio_array = await getDocs(collection(db, 'unit_ratio'));
-  const ratio_array1 = ratio_array.docs.map(doc => doc.data()); // ratio array로 수정
-  const conversion_type2 = ratio_array1.docs.map(doc => doc.data());
+  const ratio_array = await getDocs(collection(db, 'ingredients'));//문서들 받아오고
+  const ratio_array1 = ratio_array.docs.map(doc => doc.data()); // ratio array로 수정 //문서안에있는 필드
+  const conversion_type2 = ratio_array1.docs.map(doc => doc.data());  //필드 안에 있은 맵 함수들 중 ingredient_ratio 만 가져오기
+
 
 //--> 이부분은 switch / case 구문 쓰면 될듯
 async function switch_unit_conversion (w, ingredient, conversion_type) {
