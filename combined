@@ -1,6 +1,16 @@
 //랜든
 
 import { firestore } from "./firebase";
+import { firestore } from "./firebase";
+import { getAnalytics } from "firebase/analytics";
+import { getFirestore } from "firebase/firestore";
+import { authService } from "fbase";
+import React, { useState } from "react";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} 
+from "firebase/auth";
 
 const firebaseConfig = {
 
@@ -137,9 +147,7 @@ async function subtract_ingredient (w,kind,name) {
 
 //홍구
 
-import { firestore } from "./firebase";
-import { getAnalytics } from "firebase/analytics";
-import { getFirestore } from "firebase/firestore";
+
 
 const firebaseConfig = {
 
@@ -261,13 +269,8 @@ function compareComp(refrigerator_ingredients,recipe_ingredients){
 
 
 
-import { authService } from "fbase";
-import React, { useState } from "react";
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-} 
-from "firebase/auth";
+
+
 
 
 //사용자 로그인 함수.
