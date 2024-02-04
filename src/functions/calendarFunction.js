@@ -1,6 +1,7 @@
 // Import necessary Firebase functions
 import { db } from './firebaseConfig'
 
+//주간 달력을 가져오는 함수 input값으로 selectedData, 즉 선택한 날짜를 받음
 const getWeeklyCalendar = async (selectedDate) => {
   try {
     // Find the start and end dates of the week containing the selected date
@@ -26,7 +27,7 @@ const getWeeklyCalendar = async (selectedDate) => {
   }
 };
 
-// '2024-02-01'식의 format으로 바꿔주는 함수
+// '2024-02-01'식의 format으로 바꿔주는 함수, 위에 있는 함수를 보조해주려고 만든 함수
 const formatDate = (date) => {
   const year = date.getFullYear();
   const month = (date.getMonth() + 1).toString().padStart(2, '0');
@@ -34,7 +35,8 @@ const formatDate = (date) => {
   return `${year}-${month}-${day}`;
 };
 
-//그래프 데이터 설정하기 수정 ver
+//그래프 데이터 설정하기
+//selectedPeriod는 그 꺾은선 그래프가 어떤식으로 보일지 정할때 들어갈 변수, graphdata는 그 그래프 그릴때 설정한 데이터를 db에서 받을꺼임.
 const setGraphData = async (selectedPeriod, graphData) => {
   try {
     const graphDataRef = db.collection('graphData');
@@ -59,6 +61,7 @@ const setGraphData = async (selectedPeriod, graphData) => {
 };
 
 // addDailyExpense
+// 날짜의 하루 지출 추가 input으로는 선택한 날짜랑 그 날짜에 작성한 소비 데이터를 받음.
 const addDailyExpense = async (date, expenseData) => {
   try {
     const dailyExpenseRef = db.collection('dailyExpenses').doc(date);
@@ -72,6 +75,7 @@ const addDailyExpense = async (date, expenseData) => {
 };
 
 //getDailyExpense
+// 그 선택한 날짜의 소비 내역을 불러오는 함수로 인풋으로는 날짜를 받음.
 const getDailyExpense = async (date) => {
   try {
     const expenseSnapshot = await db.collection('dailyExpenses').doc(date).get();
@@ -84,7 +88,8 @@ const getDailyExpense = async (date) => {
   }
 };
 
-//도넛, 꺾은선 그래프 가져오기 수정 ver
+//도넛, 꺾은선 그래프 가져오기 
+//인풋으로 그 기간 선택(1개월, 6개월, 1년)을 받음
 const getGraphData = async (selectedPeriod) => {
   try {
     const graphDataRef = db.collection('graphData');
