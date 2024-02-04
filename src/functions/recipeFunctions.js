@@ -10,18 +10,18 @@ const getRefrigeratorIngredients = async () => {
 };
 
 // 선택한 재료를 저장하거나 업데이트
-const addToUsersRefrigerator = (inputName, inputGram/*,users_refrigerator_map, updateFirebaseUsersRefrigerator 이런식으로 변수로 받아야 할 꺼 같은*/) => {
+const addToUsersRefrigerator = (inputId, inputGram,users_refrigerator_map, updateFirebaseUsersRefrigerator) => {
   const existingIngredientIndex = users_refrigerator_map.findIndex(ingredient => ingredient.ingredient_name === inputName);
 
   if (existingIngredientIndex !== -1) {
     users_refrigerator_map[existingIngredientIndex].ingredient_gram += parseFloat(inputGram);
   } else {
     const newIngredient = {
-      ingredient_id: "여기 db꺼 가져오기", //(수정필요)
-      ingredient_name: inputName,
+      ingredient_id: inputId, //(수정필요)
+      ingredient_name: 디비,
       ingredient_gram: parseFloat(inputGram),
-      ingredient_image: "",
-      ingredient_category: ""
+      ingredient_image: "디비",
+      ingredient_category: "디비"
     };
 
     users_refrigerator_map.push(newIngredient);
