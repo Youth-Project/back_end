@@ -41,7 +41,7 @@ const ingredientSearchFilter = (searchInput) => {
 };
 
 // 다른 unit으로 변환하기
-const switchUnitConversion = async (weight, ingredient, conversionType) => {
+const switchUnitConversion = async (weight, ingredient, conversionType,currentUnit) => {
   const ratioArray = await getDocs(collection(db, 'ingredients'));
   const conversionType2 = ratioArray.docs.map((doc) => doc.data());
   
