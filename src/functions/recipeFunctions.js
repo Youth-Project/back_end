@@ -50,9 +50,9 @@ const switchUnitConversion = async (weight, ingredient, conversionType,currentUn
       return (weight * conversionType2[conversionType]).toFixed(0);
     case 'unit_to_gram':
       return (weight / conversionType2[conversionType]).toFixed(2);
-    case 'gram_to_bigspoon':
+    case 'gram_to_spoon':
       return (weight * conversionType2[conversionType]).toFixed(2);
-    case 'bigspoon_to_gram':
+    case 'spoon_to_gram':
       return (weight / conversionType2[conversionType]).toFixed(2);
     case 'gram_to_ml':
       return (weight * conversionType2[conversionType]).toFixed(2);
