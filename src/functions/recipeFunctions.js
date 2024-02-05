@@ -82,11 +82,12 @@ const addRecipeToCollection = async (recipeData) => {
   }
 };
 
-// bookmark 컬렉션에 북마크 추가하는 함수 (수정필요)
+// bookmark 컬렉션에 북마크 추가하는 함수
 const addBookmark = async (userId, recipeId) => {
   try {
     const bookmarkRef = doc(db, 'bookmark', userId);
     await updateDoc(bookmarkRef, { [recipeId]: true });
+    await addBookmarkToUser(userId, recipeId);
     console.log('Bookmark added successfully.');
   } catch (error) {
     console.error('Error adding bookmark: ', error);
@@ -168,7 +169,35 @@ const compareIngredients = (refrigeratorIngredients, recipeIngredients) => {
   return notInRef;
 };
 
+// 북마크된 레시피의 아이디를 사용자 필드에 추가하는 함수
+const addBookmarkToUser = async (userId, recipeId) => {
+  try {
+    const userRef = doc(db, 'users', userId);
+    const userDoc = await getDoc(userRef);
+
+    if (userDoc.exists()) {
+      const userData = userDoc.data();
+      const bookmarkedRecipes = userData.bookmarkedRecipes || [];
+
+      if (!bookmarkedRecipes.includes(recipeId)) {
+        bookmarkedRecipes.push(recipeId);
+        await updateDoc(userRef, { bookmarkedRecipes });
+        console.log('Bookmark added to user successfully.');
+      } else {
+        console.log('Recipe is already bookmarked by the user.');
+      }
+      
+    } else {
+      console.error('User not found.');
+    }
+    
+  } catch (error) {
+    console.error('Error adding bookmark to user: ', error);
+  }
+};
+
 export {
+  addBookmarkToUser,
   getRefrigeratorIngredients,
   addToUsersRefrigerator,
   ingredientSearchFilter,
