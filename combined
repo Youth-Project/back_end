@@ -238,7 +238,48 @@ const Auth = ({}) => {
       setPassword(value);
     }
   };
-  
+
+
+
+
+//로그인 시험용 함수
+function login(){
+    var id = document.querySelector('#id');
+    var pw = document.querySelector('#pw');
+    
+    if(id.value == "" || pw.value == "") {
+        alert("로그인을 할수 없습니다")
+    }
+    else {
+        location.href = 'main.html';
+    }
+}
+
+function back() {
+    history.go(-1);
+}
+
+function create_id() {
+    var id = document.querytSelector('#id');
+    var pw = document.querytSelector('#pw');
+    var real_pw = document.querytSelector('#real_pw');
+    
+    if(id.value == "" || pw.value == "" || reset_pw.value == "") {
+        alert("회원가입을 할 수 없습니다.")
+    }
+    else {
+        if(pw.value !== real_pw.value) {
+            alert("비밀번호를 확인해주세요")
+        }
+        else {
+            location.href = 'login.html';
+        }
+    }
+}
+
+
+
+
   
   //사용자 생성 함수.
   const onSubmit = async (event) => {
