@@ -3,12 +3,13 @@
 import { collection, getDocs, addDoc, updateDoc, doc, deleteDoc } from 'firebase/firestore';
 import { db } from './firebaseConfig';
 
-// 냉장고 재료 가져오기 (말 그대로 디비에 map으로 저장된 정보를 가져오는거
+// 냉장고 재료 가져오기 (말 그대로 디비에 map으로 저장된 정보를 가져오는거)
 const getRefrigeratorIngredients = async () => {
   const ingredientArray = await getDocs(collection(db, 'ingredients'));
   return ingredientArray.docs.map((doc) => doc.data());
 };
 
+//냉장고에서 재료 추가버튼 눌렀을때 그 선택된 재료가 들어가는 펑션
 // 선택한 재료를 저장하거나 업데이트
 //맵에서 정보 가져오기 (정확하게 한지는 헷갈)
 const addToUsersRefrigerator = (inputId, inputGram,users_refrigerator_map, updateFirebaseUsersRefrigerator) => {
@@ -38,7 +39,7 @@ const addToUsersRefrigerator = (inputId, inputGram,users_refrigerator_map, updat
   }
 };
 
-
+//재료 검색기능
 // 검색 시 비슷한 재료 카테고리 나오게하는 함수 (필터써서 서치기능)
 const ingredientSearchFilter = (searchInput) => { //searchInput=입력값
   return ingredientMap.filter((ingredient) =>
@@ -46,6 +47,7 @@ const ingredientSearchFilter = (searchInput) => { //searchInput=입력값
   );
 };
 
+//디비에 gram으로만 저장되어 있는데 레시피나 다른곳에 단위를 변환해서 보여줘야할때
 // 다른 unit으로 변환하기
 //디비에서 가져오고                   그램      재료   어떤 유닛 전환인지 현제 유닛
 const switchUnitConversion = async (weight, ingredient, conversionType,currentUnit) => { //아 그러고 보니 currentUnit 왜 만들었더라?
