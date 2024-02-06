@@ -14,7 +14,7 @@ const getRefrigeratorIngredients = async () => {
 const addToUsersRefrigerator = (inputId, inputGram,users_refrigerator_map, updateFirebaseUsersRefrigerator) => {
   const existingIngredientIndex = users_refrigerator_map.findIndex(ingredient => ingredient.ingredient_name === inputName);
   const existingIngredientIndex2 = existingIngredientIndex.docs.map((doc) => doc.data());
-//맵 정보 가저오기 맵.get(key) 로 가져오는거라고 해서 const = 맵.get(key)로 불러오기 (맞는지는 불확실)
+//맵 정보 가저오기 맵.get(key) 로 가져오는거라고 해서 const = 맵.get(key)로 불러오기 (맞는지는 불확실) https://stonefree.tistory.com/460 여기서 봄
   const existingIngredientName = existingIngredientIndex2.get(ingredient_name);
   const existingIngredientImage = existingIngredientIndex2.get(ingredient_image);
   const existingIngredientCategory = existingIngredientIndex2.get(ingredient_category);
