@@ -12,7 +12,7 @@ const getRefrigeratorIngredients = async () => {
 //냉장고에서 재료 추가버튼 눌렀을때 그 선택된 재료가 들어가는 펑션
 // 선택한 재료를 저장하거나 업데이트
 //맵에서 정보 가져오기 (정확하게 한지는 헷갈)
-const addToUsersRefrigerator = (inputId, inputGram,users_refrigerator_map, updateFirebaseUsersRefrigerator) => {
+const addToUsersRefrigerator = async (inputId, inputGram,users_refrigerator_map, updateFirebaseUsersRefrigerator) => {
   const existingIngredientIndex = users_refrigerator_map.findIndex(ingredient => ingredient.ingredient_name === inputName);
   const existingIngredientIndex2 = existingIngredientIndex.docs.map((doc) => doc.data());
 //맵 정보 가저오기 맵.get(key) 로 가져오는거라고 해서 const = 맵.get(key)로 불러오기 (맞는지는 불확실) https://stonefree.tistory.com/460 여기서 봄
