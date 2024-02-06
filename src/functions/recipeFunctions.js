@@ -167,35 +167,6 @@ const recipeIdGenerator = () => {
   return 'recipe' + recipeCounter;
 };
 
-// 북마크 토글 함수
-const toggleBookmark = async (userId, recipeId) => {
-  try {
-    const userRef = doc(db, 'users', userId);
-    const userDoc = await getDoc(userRef);
-
-    if (userDoc.exists()) {
-      const userData = userDoc.data();
-      const bookmarkedRecipes = userData.bookmarkedRecipes || [];
-
-      if (bookmarkedRecipes.includes(recipeId)) {
-        // 레시피가 이미 북마크되어 있으면 제거
-        const updatedBookmarkedRecipes = bookmarkedRecipes.filter(id => id !== recipeId);
-        await updateDoc(userRef, { bookmarkedRecipes: updatedBookmarkedRecipes });
-        console.log('Bookmark removed from user successfully.');
-      } else {
-        // 레시피가 북마크되어 있지 않으면 추가
-        updatedBookmarkedRecipes.push(recipeId);
-        await updateDoc(userRef, { bookmarkedRecipes: updatedBookmarkedRecipes });
-        console.log('Bookmark added to user successfully.');
-      }
-    } else {
-      console.error('User not found.');
-    }
-  } catch (error) {
-    console.error('Error toggling bookmark: ', error);
-  }
-};
-
 
 // 레시피와 냉장고에 있는 재료 비교하는 함수
 const compareIngredients = (refrigeratorIngredients, recipeIngredients) => {
