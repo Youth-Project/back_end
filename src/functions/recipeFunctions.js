@@ -3,7 +3,7 @@
 import { collection, getDocs, addDoc, updateDoc, doc, deleteDoc } from 'firebase/firestore';
 import { db } from './firebaseConfig';
 
-// 냉장고 재료 가져오기
+// 냉장고 재료 가져오기 (말 그대로 디비에 map으로 저장된 정보를 가져오는거
 const getRefrigeratorIngredients = async () => {
   const ingredientArray = await getDocs(collection(db, 'ingredients'));
   return ingredientArray.docs.map((doc) => doc.data());
@@ -18,10 +18,10 @@ const addToUsersRefrigerator = (inputId, inputGram,users_refrigerator_map, updat
   const existingIngredientName = existingIngredientIndex2.get(ingredient_name);
   const existingIngredientImage = existingIngredientIndex2.get(ingredient_image);
   const existingIngredientCategory = existingIngredientIndex2.get(ingredient_category);
-  
+  //만약에 같은 재료가 있으면 그램만 추가
   if (existingIngredientIndex !== -1) {
     users_refrigerator_map[existingIngredientIndex].ingredient_gram += parseFloat(inputGram);
-  } else {
+  } else { //아니면 재료에 모든 정보 추가
     const newIngredient = {
       ingredient_id: inputId, //(수정필요)
       ingredient_name: existingIngredientName,
@@ -32,26 +32,29 @@ const addToUsersRefrigerator = (inputId, inputGram,users_refrigerator_map, updat
 
     users_refrigerator_map.push(newIngredient);
   }
-
+//이건 하영이가 만들어놔서 100퍼 잘 모르겠음
   if (updateFirebaseUsersRefrigerator) { //(수정필요)
     await updateFirebaseUsersRefrigerator(users_refrigerator_map);
   }
 };
 
 
-// 검색 시 비슷한 재료 카테고리 나오게하는 함수
-const ingredientSearchFilter = (searchInput) => {
+// 검색 시 비슷한 재료 카테고리 나오게하는 함수 (필터써서 서치기능)
+const ingredientSearchFilter = (searchInput) => { //searchInput=입력값
   return ingredientMap.filter((ingredient) =>
     ingredient.ingredient_name.includes(searchInput)
   );
 };
 
 // 다른 unit으로 변환하기
-const switchUnitConversion = async (weight, ingredient, conversionType,currentUnit) => {
+//디비에서 가져오고                   그램      재료   어떤 유닛 전환인지 현제 유닛
+const switchUnitConversion = async (weight, ingredient, conversionType,currentUnit) => { //아 그러고 보니 currentUnit 왜 만들었더라?
   const ratioArray = await getDocs(collection(db, 'ingredients'));
   const conversionType2 = ratioArray.docs.map((doc) => doc.data());
-  
+  //switch/case구문으로 각 케이스에 걸리면 그거에 맞는값을 리턴 예) conversionType=gram_to_unit; --> return (weight * conversionType2[conversionType]).toFixed(0); 으로 단위를 바꿔주는 함수
   switch (conversionType) {
+    case 'gram_to_gram':
+      return weight;
     case 'gram_to_unit':
       return (weight * conversionType2[conversionType]).toFixed(0);
     case 'unit_to_gram':
@@ -71,11 +74,12 @@ const switchUnitConversion = async (weight, ingredient, conversionType,currentUn
 
 // 레시피에서 조리 완료시 냉장고의 재료가 줄어들도록하는 함수
 const subtractIngredient = async (weight, kind, name) => {
+  //ogGram은 원래 디비에서 받은값
   const ogGram = (await collection(db, 'ingredients').doc(kind).get()).data().ingredient_gram;
-  const updateValue = ogGram - weight;
+  const updateValue = ogGram - weight; //차감되는 함수니깐 차감
 
   await collection(db, 'users').doc(kind).update({ [name]: { ingredient_gram: Math.max(0, updateValue) } });
-};
+};//차감된 값을 다시 db에 넣어주는데 만약 넣어주는 값 (updateValue)가 마이너스이면 updateValue=0으로 만들어버리는 함수
 
 // recipe 컬렉션에 레시피 추가하는 함수 (수정필요)
 const addRecipeToCollection = async (recipeData) => {
