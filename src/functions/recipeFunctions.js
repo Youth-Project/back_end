@@ -10,18 +10,24 @@ const getRefrigeratorIngredients = async () => {
 };
 
 // 선택한 재료를 저장하거나 업데이트
+//맵에서 정보 가져오기 (정확하게 한지는 헷갈)
 const addToUsersRefrigerator = (inputId, inputGram,users_refrigerator_map, updateFirebaseUsersRefrigerator) => {
   const existingIngredientIndex = users_refrigerator_map.findIndex(ingredient => ingredient.ingredient_name === inputName);
-
+  const existingIngredientIndex2 = existingIngredientIndex.docs.map((doc) => doc.data());
+//맵 정보 가저오기 맵.get(key) 로 가져오는거라고 해서 const = 맵.get(key)로 불러오기 (맞는지는 불확실)
+  const existingIngredientName = existingIngredientIndex2.get(ingredient_name);
+  const existingIngredientImage = existingIngredientIndex2.get(ingredient_image);
+  const existingIngredientCategory = existingIngredientIndex2.get(ingredient_category);
+  
   if (existingIngredientIndex !== -1) {
     users_refrigerator_map[existingIngredientIndex].ingredient_gram += parseFloat(inputGram);
   } else {
     const newIngredient = {
       ingredient_id: inputId, //(수정필요)
-      ingredient_name: 디비,
+      ingredient_name: existingIngredientName,
       ingredient_gram: parseFloat(inputGram),
-      ingredient_image: "디비",
-      ingredient_category: "디비"
+      ingredient_image: existingIngredientImage,
+      ingredient_category: existingIngredientImage
     };
 
     users_refrigerator_map.push(newIngredient);
