@@ -23,7 +23,7 @@ const db = getFirestore(firebaseApp);
 const auth = getAuth(firebaseApp);
 
 try {
-  setPersistence(auth, browserLocalPersistence);
+  setPersistence(auth, getReactNativePersistence(AsyncStorage));
 } catch (error) {
   console.error('Error setting auth persistence:', error);
 }
