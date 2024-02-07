@@ -2,6 +2,7 @@ import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import * as admin from 'firebase-admin';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Import your service account key
 import serviceAccount from './serviceAccountKey.json';
@@ -20,6 +21,12 @@ const firebaseConfig = {
 const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
 const auth = getAuth(firebaseApp);
+
+try {
+  setPersistence(auth, browserLocalPersistence);
+} catch (error) {
+  console.error('Error setting auth persistence:', error);
+}
 
 // Initialize Admin SDK
 try {
