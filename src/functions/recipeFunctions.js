@@ -12,7 +12,7 @@ const getRefrigeratorIngredients = async () => {
 //냉장고에서 재료 추가버튼 눌렀을때 그 선택된 재료가 들어가는 펑션
 // 선택한 재료를 저장하거나 업데이트
 //맵에서 정보 가져오기 (정확하게 한지는 헷갈)
-const addToUsersRefrigerator = async (inputId, inputGram,users_refrigerator_map, updateFirebaseUsersRefrigerator) => {
+const addToUsersRefrigerator = async (inputId, inputGram, users_refrigerator_map, updateFirebaseUsersRefrigerator) => {
   const existingIngredientIndex = users_refrigerator_map.findIndex(ingredient => ingredient.ingredient_name === inputName);
   const existingIngredientIndex2 = existingIngredientIndex.docs.map((doc) => doc.data());
 //맵 정보 가저오기 맵.get(key) 로 가져오는거라고 해서 const = 맵.get(key)로 불러오기 (맞는지는 불확실) https://stonefree.tistory.com/460 여기서 봄
@@ -54,25 +54,58 @@ const switchUnitConversion = async (weight, ingredient, conversionType,currentUn
   const ratioArray = await getDocs(collection(db, 'ingredients'));
   const conversionType2 = ratioArray.docs.map((doc) => doc.data());
   //switch/case구문으로 각 케이스에 걸리면 그거에 맞는값을 리턴 예) conversionType=gram_to_unit; --> return (weight * conversionType2[conversionType]).toFixed(0); 으로 단위를 바꿔주는 함수
+  if (conversionType2[conversionType] = 0){
+      const space = ' ';
+      const unit = 'g';
+      const ingredient_output = weight.concat(space, unit);
+        return ingredient_output;
+      } else {
   switch (conversionType) {
     case 'gram_to_gram':
       return weight;
     case 'gram_to_unit':
-      return (weight * conversionType2[conversionType]).toFixed(0);
+      const weight = (weight * conversionType2[conversionType]).toFixed(2);
+      const space = ' ';
+      const unit = '개';
+      const ingredient_output = weight.concat(space, unit);
+      return ingredient_output;
+      }
     case 'unit_to_gram':
-      return (weight / conversionType2[conversionType]).toFixed(2);
+      const weight = (weight / conversionType2[conversionType]).toFixed(2);
+      const space = ' ';
+      const unit = 'g';
+      const ingredient_output = weight.concat(space, unit);
+      return ingredient_output;
     case 'gram_to_spoon':
-      return (weight * conversionType2[conversionType]).toFixed(2);
+      const weight = (weight * conversionType2[conversionType]).toFixed(2);
+      const space = ' ';
+      const unit = '스푼';
+      const ingredient_output = weight.concat(space, unit);
+      return ingredient_output;
     case 'spoon_to_gram':
-      return (weight / conversionType2[conversionType]).toFixed(2);
+      const weight = (weight / conversionType2[conversionType]).toFixed(2);
+      const space = ' ';
+      const unit = 'g';
+      const ingredient_output = weight.concat(space, unit);
+      return ingredient_output;
     case 'gram_to_ml':
-      return (weight * conversionType2[conversionType]).toFixed(2);
+      const weight = (weight * conversionType2[conversionType]).toFixed(2);
+      const space = ' ';
+      const unit = 'ml';
+      const ingredient_output = weight.concat(space, unit);
+      return ingredient_output;
     case 'ml_to_gram':
-      return (weight / conversionType2[conversionType]).toFixed(2);
+      const weight = (weight / conversionType2[conversionType]).toFixed(2);
+      const space = ' ';
+      const unit = 'g';
+      const ingredient_output = weight.concat(space, unit);
+      return ingredient_output;
     default:
       return weight;
   }
 };
+}
+
 
 // 레시피에서 조리 완료시 냉장고의 재료가 줄어들도록하는 함수
 const subtractIngredient = async (weight, kind, name) => {
