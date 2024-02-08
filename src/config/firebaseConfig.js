@@ -18,9 +18,10 @@ const firebaseConfig = {
   databaseURL: "https://firestore.googleapis.com/v1/projects/youth-truffle/databases/(default)/documents",
 };
 
-const firebaseApp = initializeApp(firebaseConfig);
+const app = firebase.initializeApp(firebaseConfig);
 const db = app.firestore();
-const auth = getAuth(firebaseApp);
+const auth = app.auth();
+const storage = app.storage();
 
 try {
   setPersistence(auth, getReactNativePersistence(AsyncStorage));
