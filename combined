@@ -116,6 +116,46 @@ collection('recipe').doc(recipeId).set({
   recipeTime:[0,30]
 });
 
+
+// 레시피 객체 생성자 함수
+function Recipe(name, ingredients, instructions, cookingTime, difficulty) {
+    this.name = recipe_name;
+    this.ingredients = recipe_ingredients;
+    this.instructions = recipe_steps;
+    this.cookingTime = recipe_time;
+    this.difficulty = recipe_difficulty;
+}
+
+// 새로운 레시피를 Firestore에 추가하는 함수
+function addRecipeToFirestore(recipe) {
+    db.collection("recipes").add(recipe)
+        .then(function(docRef) {
+            console.log("레시피가 성공적으로 추가되었습니다. 문서 ID:", docRef.id);
+        })
+        .catch(function(error) {
+            console.error("레시피 추가 중 오류 발생:", error);
+        });
+}
+
+// 사용자로부터 레시피 정보를 입력받는 함수
+function addRecipe() {
+    // 사용자로부터 입력 받기
+    let name = prompt("레시피 이름을 입력하세요:");
+    let ingredients = prompt("레시피 재료를 입력하세요 (쉼표로 구분):").split(",");
+    let instructions = prompt("레시피 만드는 방법을 입력하세요:");
+    let cookingTime = prompt("레시피 만드는 시간을 분 단위로 입력하세요:");
+    let difficulty = prompt("레시피 어려움 정도를 입력하세요 (쉬움, 보통, 어려움 중 하나):");
+
+    // 새로운 레시피 객체 생성
+    let newRecipe = new Recipe(name, ingredients, instructions, cookingTime, difficulty);
+
+    // Firestore에 레시피 추가
+    addRecipeToFirestore(newRecipe);
+}
+
+// 레시피 추가 함수 호출
+addRecipe();
+
 //레시피 북마크 컬렉션.
 collection('bookmark').doc(userId).set({
   [recipeId]:true//북마크 했는지 여부(true = 북마크 추가된것)
