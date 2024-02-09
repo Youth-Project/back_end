@@ -53,55 +53,43 @@ const ingredientSearchFilter = (searchInput) => { //searchInput=입력값
 const switchUnitConversion = async (weight, ingredient, conversionType,currentUnit) => { //아 그러고 보니 currentUnit 왜 만들었더라?
   const ratioArray = await getDocs(collection(db, 'ingredients'));
   const conversionType2 = ratioArray.docs.map((doc) => doc.data());
+  const weightConversion = 0; //바뀐 숫자 담는곳
+  const unit = ' '; //바뀐 유닛 담는곳
   //switch/case구문으로 각 케이스에 걸리면 그거에 맞는값을 리턴 예) conversionType=gram_to_unit; --> return (weight * conversionType2[conversionType]).toFixed(0); 으로 단위를 바꿔주는 함수
   if (conversionType2[conversionType] = 0){
-      const space = ' ';
-      const unit = 'g';
-      const ingredient_output = weight.concat(space, unit);
-        return ingredient_output;
+      unit = 'g';
+        return [weightConversion, unit];
       } else {
   switch (conversionType) {
     case 'gram_to_gram':
-      return weight;
+      weightConversion = weight;
+      return [weightConversion, unit];
     case 'gram_to_unit':
-      const weight = (weight * conversionType2[conversionType]).toFixed(2);
-      const space = ' ';
-      const unit = '개';
-      const ingredient_output = weight.concat(space, unit);
-      return ingredient_output;
-      }
+      weightConversion = (weight * conversionType2[conversionType]).toFixed(2);
+      unit = '개';
+      return [weightConversion, unit];
     case 'unit_to_gram':
-      const weight = (weight / conversionType2[conversionType]).toFixed(2);
-      const space = ' ';
-      const unit = 'g';
-      const ingredient_output = weight.concat(space, unit);
-      return ingredient_output;
+      weightConversion = (weight / conversionType2[conversionType]).toFixed(2);
+      unit = 'g';
+      return [weightConversion, unit];
     case 'gram_to_spoon':
-      const weight = (weight * conversionType2[conversionType]).toFixed(2);
-      const space = ' ';
-      const unit = '스푼';
-      const ingredient_output = weight.concat(space, unit);
-      return ingredient_output;
+      weightConversion = (weight * conversionType2[conversionType]).toFixed(2);
+      unit = '스푼';
+      return [weightConversion, unit];
     case 'spoon_to_gram':
-      const weight = (weight / conversionType2[conversionType]).toFixed(2);
-      const space = ' ';
-      const unit = 'g';
-      const ingredient_output = weight.concat(space, unit);
-      return ingredient_output;
+      weightConversion = (weight / conversionType2[conversionType]).toFixed(2);
+      unit = 'g'
+      return [weightConversion, unit];
     case 'gram_to_ml':
-      const weight = (weight * conversionType2[conversionType]).toFixed(2);
-      const space = ' ';
-      const unit = 'ml';
-      const ingredient_output = weight.concat(space, unit);
-      return ingredient_output;
+      weightConversion = (weight * conversionType2[conversionType]).toFixed(2);
+      unit = 'ml';
+      return [weightConversion, unit];
     case 'ml_to_gram':
-      const weight = (weight / conversionType2[conversionType]).toFixed(2);
-      const space = ' ';
-      const unit = 'g';
-      const ingredient_output = weight.concat(space, unit);
-      return ingredient_output;
+      weightConversion = (weight / conversionType2[conversionType]).toFixed(2);
+      unit = 'g';
+      return [weightConversion, unit];
     default:
-      return weight;
+      return [weightConversion, unit];
   }
 };
 }
