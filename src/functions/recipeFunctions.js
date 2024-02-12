@@ -50,7 +50,7 @@ const ingredientSearchFilter = (searchInput) => { //searchInput=입력값
 //디비에 gram으로만 저장되어 있는데 레시피나 다른곳에 단위를 변환해서 보여줘야할때
 // 다른 unit으로 변환하기
 //디비에서 가져오고                   그램      재료   어떤 유닛 전환인지 현제 유닛
-const switchUnitConversion = async (weight, ingredient, conversionType,currentUnit) => { //아 그러고 보니 currentUnit 왜 만들었더라?
+const switchUnitConversion = async (weight, ingredient, conversionType, currentUnit) => { //아 그러고 보니 currentUnit 왜 만들었더라?
   const ratioArray = await getDocs(collection(db, 'ingredients'));
   const conversionType2 = ratioArray.docs.map((doc) => doc.data());
   const weightConversion = 0; //바뀐 숫자 담는곳
